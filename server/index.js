@@ -23,6 +23,13 @@ app.get('/', (req, res) => {
   res.send('Hello, MongoDB!');
 });
 
+app.post('/api/video', (req, res) => {
+  const { videoLink, description } = req.body;
+  // Perform validation, save to database, etc.
+
+  res.status(200).json({ message: 'Video uploaded successfully!' });
+});
+
 // Start the server
 const port = process.env.PORT || 3000; // Use environment variable PORT or default to 3000
 app.listen(port, () => {

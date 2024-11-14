@@ -15,8 +15,8 @@ const Login = () => {
     try {
       // Attempt to authenticate with backend
       const response = await axios.post('http://localhost:3000/api/users/login', { email, password });
-      
-      if (response.data.success) {
+      console.log(response.data, "this is my response");
+      if (response.data) {
         // Notify of successful login
         toast.success("Login successful!");
 
@@ -25,7 +25,7 @@ const Login = () => {
         
         // Redirect to Profile page after a short delay
         setTimeout(() => {
-          navigate('/profile');
+          navigate(`/profile/${response.data._id}`);
         }, 1000);
       } else {
         toast.error("Invalid email or password");

@@ -1,38 +1,48 @@
 import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
+import { logout } from '../../redux/actions'; // Logout action to clear user data
 
 const Profile = () => {
+  const { userId: userIdParam } = useParams(); // userId from URL
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  
+  // Retrieve user ID from Redux or fallback to URL param
+  const userId = useSelector((state) => state.user?.user?._id) || userIdParam;
   const [user, setUser] = useState(null);
   const [subscribedChannels, setSubscribedChannels] = useState([
-    // Example data; replace with a fetch call in a real app
     { id: 1, title: "React for Beginners", channel: "Code Academy" },
     { id: 2, title: "Advanced JavaScript", channel: "TechieTube" },
   ]);
 
   useEffect(() => {
-    // Fetch logged-in user data from API (replace URL with your backend route)
-    axios.get('http://localhost:3000/api/users/profile') // Assuming profile route returns user info
-      .then(response => {
-        setUser(response.data); // Update the user state with API response data
-      })
-      .catch(error => {
-        console.error("Error fetching user data:", error);
-      });
-  }, []);
+    if (userId) {
+      axios.get(`http://localhost:3000/api/users/profile/${userId}`)
+        .then(response => {
+          setUser(response.data);
+        })
+        .catch(error => {
+          console.error("Error fetching user data:", error);
+        });
+    } else {
+      // Redirect to login if no userId is available
+      navigate('/login');
+    }
+  }, [userId, navigate]);
 
   const handleMenuOption = (option) => {
     switch (option) {
       case "upload":
-        // Handle video upload logic here
+        navigate('/upload'); // Redirect to video upload page
         break;
       case "editProfile":
-        // Handle edit profile logic here
-        break;
-      case "editChannel":
-        // Handle edit channel logic here
+        navigate(`/edit-profile/${userId}`); // Redirect to profile editing page
         break;
       case "logout":
-        // Handle logout logic here
+        dispatch(logout()); // Clear user data from Redux
+        navigate('/login'); // Redirect to login page
         break;
       default:
         break;
@@ -43,14 +53,14 @@ const Profile = () => {
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
       <div className="w-1/5 bg-white shadow-md p-6 flex flex-col items-center">
-          {user && user.profilePicture ? (
+        {user && user.profilePicture ? (
           <img
-            src={user.profilePicture} // Make sure this path points to the profile picture URL in your user data
+            src={user.profilePicture}
             alt="Profile"
             className="w-24 h-24 rounded-full mb-4"
           />
         ) : (
-          <i className="fas fa-user-circle text-6xl text-gray-500 mb-4"></i> // Display icon if no profile picture
+          <i className="fas fa-user-circle text-6xl text-gray-500 mb-4"></i>
         )}
         
         <h2 className="text-xl font-semibold mb-1">
@@ -60,17 +70,27 @@ const Profile = () => {
           {user ? user.email : "Loading..."}
         </p>
 
-        {/* Dropdown Menu */}
-        <select
-          className="py-2 px-4 border rounded-md text-gray-700 bg-white shadow-sm w-full"
-          onChange={(e) => handleMenuOption(e.target.value)}
-        >
-          <option value="">Options</option>
-          <option value="upload">Upload Video</option>
-          <option value="editProfile">Edit Profile</option>
-          <option value="editChannel">Edit Channel</option>
-          <option value="logout">Logout</option>
-        </select>
+        {/* Navbar Menu */}
+        <div className="flex flex-col w-full space-y-2">
+          <button
+            className="py-2 px-4 bg-blue-500 text-white rounded-md shadow-sm w-full"
+            onClick={() => handleMenuOption("upload")}
+          >
+            Upload Video
+          </button>
+          <button
+            className="py-2 px-4 bg-blue-500 text-white rounded-md shadow-sm w-full"
+            onClick={() => handleMenuOption("editProfile")}
+          >
+            Edit Profile
+          </button>
+          <button
+            className="py-2 px-4 bg-red-500 text-white rounded-md shadow-sm w-full"
+            onClick={() => handleMenuOption("logout")}
+          >
+            Logout
+          </button>
+        </div>
       </div>
 
       {/* Main Content */}
