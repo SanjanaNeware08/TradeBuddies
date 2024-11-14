@@ -3,7 +3,7 @@ const router = express.Router();
 const User = require('../models/User');
 
 // Sign-in (registration) route
-router.post('/signin', async (req, res) => {
+router.post('/register', async (req, res) => {
   try {
     console.log("Received user data:", req.body);
     const newUser = new User(req.body);
