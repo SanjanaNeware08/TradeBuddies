@@ -1,15 +1,21 @@
 import React from 'react';
 import Navbar from '../componant/Navbar';
 import Footer from '../componant/Footer';
+import learn from './learn.jpg';
 
 function Home() {
   return (
-    <div className="flex flex-col min-h-screen"> {/* Use flex and min-h-screen to make the container full height */}
+    <div
+      className="flex flex-col min-h-screen bg-cover bg-center"
+      style={{ backgroundImage: `url(${learn})` }}
+    >
       <Navbar />
-      <div className="flex-grow"> {/* This ensures the main content area takes up available space */}
-        {/* Main content goes here */}
+      <div className="flex-grow">
+        {/* Additional main content area if needed */}
       </div>
-      <Footer /> {/* Footer will now be at the bottom */}
+      <div className="relative">
+        <Footer />
+      </div>
     </div>
   );
 }

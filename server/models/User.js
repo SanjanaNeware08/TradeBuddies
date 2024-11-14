@@ -19,6 +19,11 @@ const schema = new mongoose.Schema({
         type : String,
         required : true,
     },
+
+    domain :{
+        type : String,
+        required : true,
+    }
 })
 
 const User = mongoose.model("User", schema);

@@ -2,7 +2,7 @@ import React from 'react';
 
 function Footer() {
   return (
-    <div className=" text-black py-6">
+    <div className="bg-transparent text-black py-6">
       <div className="flex justify-center space-x-6 mb-4">
         <i className="fa-brands fa-square-instagram text-2xl hover:text-pink-500"></i>
         <i className="fa-brands fa-square-whatsapp text-2xl hover:text-green-500"></i>

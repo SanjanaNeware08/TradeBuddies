@@ -14,7 +14,7 @@ const SignIn = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:3000/api/users/login', { name, email, phoneNo, password, domain });
+      const response = await axios.post('http://localhost:3000/api/users/signin', { name, email, phoneNo, password, domain });
       console.log("Data sent", response.data);
 
       // Show success notification

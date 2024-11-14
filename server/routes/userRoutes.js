@@ -21,4 +21,19 @@ router.post('/signin', async (req, res) => {
   }
 });
 
+router.get('/profile', async(req, res) => {
+  try{
+    const {userId} = req.params;
+    const user = await user.findById(userId);
+
+    if(!user){
+      return res.status(404).json({message : "user not found"});
+    }
+
+    res.status(200).json(user);
+  }catch{
+    req.status(500).json({message:error.message});
+  }
+})
+
 module.exports = router;
