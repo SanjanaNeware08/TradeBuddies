@@ -1,17 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import axios from 'axios';
-import { logout } from '../../redux/actions'; // Logout action to clear user data
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
+import {
+  signOutUserStart,
+  signOutUserSuccess,
+} from "../../redux/user/userSlice";
 
 const Profile = () => {
-  const { userId: userIdParam } = useParams(); // userId from URL
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  // Retrieve user ID from Redux or fallback to URL param
-  const userId = useSelector((state) => state.user?.user?._id) || userIdParam;
-  const [user, setUser] = useState(null);
+
+  // Retrieve user data from persisted Redux state
+  const currentUser = useSelector((state) => state.user.currentUser);
+  const userId = currentUser?._id;
+
+  const [user, setUser] = useState(currentUser); // Local state for user data
   const [subscribedChannels, setSubscribedChannels] = useState([
     { id: 1, title: "React for Beginners", channel: "Code Academy" },
     { id: 2, title: "Advanced JavaScript", channel: "TechieTube" },
@@ -19,30 +23,31 @@ const Profile = () => {
 
   useEffect(() => {
     if (userId) {
-      axios.get(`http://localhost:3000/api/users/profile/${userId}`)
-        .then(response => {
-          setUser(response.data);
+      axios
+        .get(`http://localhost:3000/api/users/profile/${userId}`)
+        .then((response) => {
+          setUser(response.data); // Set local user state
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching user data:", error);
         });
     } else {
-      // Redirect to login if no userId is available
-      navigate('/login');
+      navigate("/login"); // Redirect to login if no user is available
     }
   }, [userId, navigate]);
 
   const handleMenuOption = (option) => {
     switch (option) {
       case "upload":
-        navigate('/upload'); // Redirect to video upload page
+        navigate("/upload"); // Redirect to video upload page
         break;
       case "editProfile":
         navigate(`/edit-profile/${userId}`); // Redirect to profile editing page
         break;
       case "logout":
-        dispatch(logout()); // Clear user data from Redux
-        navigate('/login'); // Redirect to login page
+        dispatch(signOutUserStart()); // Trigger loading for sign-out
+        dispatch(signOutUserSuccess()); // Clear user data in Redux
+        navigate("/login"); // Redirect to login page
         break;
       default:
         break;
@@ -62,13 +67,11 @@ const Profile = () => {
         ) : (
           <i className="fas fa-user-circle text-6xl text-gray-500 mb-4"></i>
         )}
-        
+
         <h2 className="text-xl font-semibold mb-1">
           {user ? user.name : "Loading..."}
         </h2>
-        <p className="text-gray-600 mb-4">
-          {user ? user.email : "Loading..."}
-        </p>
+        <p className="text-gray-600 mb-4">{user ? user.email : "Loading..."}</p>
 
         {/* Navbar Menu */}
         <div className="flex flex-col w-full space-y-2">
