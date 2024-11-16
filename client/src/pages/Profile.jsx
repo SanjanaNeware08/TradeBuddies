@@ -41,13 +41,14 @@ const Profile = () => {
       case "upload":
         navigate("/upload"); // Redirect to video upload page
         break;
-      case "editProfile":
-        navigate(`/edit-profile/${userId}`); // Redirect to profile editing page
+      case "mylecture":
+        navigate(`/mylec`); // Redirect to profile editing page
         break;
       case "logout":
         dispatch(signOutUserStart()); // Trigger loading for sign-out
         dispatch(signOutUserSuccess()); // Clear user data in Redux
-        navigate("/login"); // Redirect to login page
+        localStorage.removeItem('user'); // Optionally clear any user-related local storage
+        navigate("/");  // Redirect to login page
         break;
       default:
         break;
@@ -83,9 +84,9 @@ const Profile = () => {
           </button>
           <button
             className="py-2 px-4 bg-blue-500 text-white rounded-md shadow-sm w-full"
-            onClick={() => handleMenuOption("editProfile")}
+            onClick={() => handleMenuOption("mylecture")}
           >
-            Edit Profile
+            My Videos
           </button>
           <button
             className="py-2 px-4 bg-red-500 text-white rounded-md shadow-sm w-full"

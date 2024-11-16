@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
+import { useNavigate } from "react-router-dom";
 import Navbar from "../componant/Navbar";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -10,15 +10,33 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [phoneNo, setPhoneNo] = useState("");
   const [password, setPassword] = useState("");
-  const [domain, setDomain] = useState(""); // New state for domain
-  const navigate = useNavigate(); // Initialize navigate
+  const [domain, setDomain] = useState("");
+  const [profilePicture, setProfilePicture] = useState(null); // New state for profile picture
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Prepare form data
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("phoneNo", phoneNo);
+    formData.append("password", password);
+    formData.append("domain", domain);
+    if (profilePicture) {
+      formData.append("profilePicture", profilePicture); // Append the profile picture
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:3000/api/users/register",
-        { name, email, phoneNo, password, domain }
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data", // Set the correct header
+          },
+        }
       );
       console.log("Data sent", response.data);
 
@@ -31,10 +49,11 @@ const Register = () => {
       setPhoneNo("");
       setPassword("");
       setDomain("");
+      setProfilePicture(null);
 
       // Redirect to login page after a short delay
       setTimeout(() => {
-        navigate("/login"); // Navigate to the login page
+        navigate("/login");
       }, 1000);
     } catch (error) {
       console.error("Registration failed:", error);
@@ -49,6 +68,7 @@ const Register = () => {
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-sm bg-white p-8 rounded-lg shadow-lg"
+          encType="multipart/form-data" // Add encoding type for file upload
         >
           <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">
             Register
@@ -90,7 +110,7 @@ const Register = () => {
             className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
           />
 
-          {/* New dropdown for domain */}
+          {/* Domain Dropdown */}
           <select
             value={domain}
             onChange={(e) => setDomain(e.target.value)}
@@ -107,6 +127,19 @@ const Register = () => {
             <option value="acting">Acting</option>
           </select>
 
+          {/* Profile Picture Upload */}
+          <div className="mb-6">
+            <label className="block text-gray-700 font-medium mb-2">
+              Profile Picture
+            </label>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => setProfilePicture(e.target.files[0])}
+              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            />
+          </div>
+
           <button
             type="submit"
             className="w-full bg-indigo-500 text-white py-2 rounded-md font-semibold hover:bg-indigo-600 transition duration-200"
@@ -114,7 +147,6 @@ const Register = () => {
             Register
           </button>
 
-          {/* Login link for existing users */}
           <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
             <a href="/login" className="text-indigo-500 hover:underline">
@@ -123,7 +155,6 @@ const Register = () => {
           </p>
         </form>
 
-        {/* Toast Container for notifications */}
         <ToastContainer />
       </div>
     </>

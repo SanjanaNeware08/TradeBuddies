@@ -19,7 +19,7 @@ function App() {
     <Router>
       <Routes>
         {/* <Router path="/" element={<Home />} /> */}
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/explore" element={<Explore />} />
         <Route path="/help" element={<Help />} />
         <Route element={<PublicRoute />}>
@@ -28,8 +28,8 @@ function App() {
         </Route>
         <Route element={<PrivateRoute />}>
           <Route path="/profile" element={<Profile />} />
-          <Route path="/video" element={<VideoLecture />} />
-          <Route path="/upload-video" element={<UploadVideo />} />
+          <Route path="/mylec" element={<VideoLecture />} />
+          <Route path="/upload" element={<UploadVideo />} />
         </Route>
       </Routes>
     </Router>

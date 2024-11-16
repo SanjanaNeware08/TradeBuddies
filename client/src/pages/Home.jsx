@@ -10,13 +10,10 @@ function Home() {
       style={{ backgroundImage: `url(${learn})` }}
     >
       <Navbar />
-      This is home page
+      
       <div className="flex-grow">
         {/* Additional main content area if needed */}
-        This is home page
-      </div>
-      <div className="relative">
-        <Footer />
+        
       </div>
     </div>
   );
