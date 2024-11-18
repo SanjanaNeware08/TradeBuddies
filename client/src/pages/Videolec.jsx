@@ -1,32 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Navbar from '../componant/Navbar';
+import axios from 'axios'; // Import Axios for making API calls
+import { useSelector } from 'react-redux'; // Import useSelector to get user data from Redux
 
 const VideoLecture = () => {
-  // Extract YouTube Video ID
+  // State for storing uploaded lectures
+  const [uploadedLectures, setUploadedLectures] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Extract logged-in user details from Redux store
+  const currentUser = useSelector((state) => state.user?.currentUser);
+
+  // Function to extract YouTube Video ID
   const extractYouTubeVideoID = (url) => {
     const regExp = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([\w-]{11})/;
     const match = url.match(regExp);
     return match ? match[1] : null; // Return the video ID or null if invalid
   };
 
-  const [uploadedLectures] = useState([
-    {
-      id: 1,
-      title: 'Introduction to Programming',
-      description: 'Basics of programming concepts for beginners.',
-      rating: 4.5,
-      uploadDate: '2023-10-01',
-      videoLink: 'https://youtu.be/ifo76VyrBYo?si=TMvpGpR4CZ28b6xA', // YouTube video link
-    },
-    {
-      id: 2,
-      title: 'Advanced JavaScript',
-      description: 'In-depth look at JavaScript and ES6 features.',
-      rating: 4.7,
-      uploadDate: '2023-10-15',
-      videoLink: 'https://youtu.be/R9I85RhI7Cg?si=M459G8iDtjpCWiam', // YouTube video link
-    },
-  ]);
+  console.log(currentUser);
+
+  // Fetch videos from the backend
+  useEffect(() => {
+    const fetchVideos = async () => {
+      if (!currentUser?._id) {
+        setError('User is not logged in');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        console.log('Fetching videos for userId:', currentUser._id);
+
+        // Make API call to fetch videos
+        const response = await axios.get('http://localhost:3000/api/video/videos', {
+          params: { userId: currentUser._id }, // Pass userId as a query parameter
+        });
+
+        // Handle the successful response
+        setUploadedLectures(response.data.videos);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message || 'Failed to fetch videos');
+        setLoading(false);
+      }
+    };
+
+    if (currentUser) {
+      fetchVideos();
+    } else {
+      setLoading(false); // If user is not logged in, stop loading
+    }
+  }, [currentUser]);
 
   // Render individual video lecture card
   const renderLectureCard = (lecture) => {
@@ -34,7 +60,10 @@ const VideoLecture = () => {
     const videoEmbedURL = `https://www.youtube.com/embed/${videoID}`; // Generate embed URL
 
     return (
-      <div key={lecture.id} className="bg-white shadow-lg rounded-lg overflow-hidden w-full mb-6 flex items-center space-x-4 p-4">
+      <div
+        key={lecture._id}
+        className="bg-white shadow-lg rounded-lg overflow-hidden w-full mb-6 flex items-center space-x-4 p-4"
+      >
         {/* Video Section (20-30% width) */}
         <div className="w-1/4">
           {videoID ? (
@@ -54,8 +83,7 @@ const VideoLecture = () => {
           <h3 className="text-xl font-semibold text-gray-800">{lecture.title}</h3>
           <p className="text-gray-600">{lecture.description}</p>
           <div className="flex justify-between text-sm text-gray-500 mt-2">
-            <span>Rating: {lecture.rating} / 5</span>
-            <span>Uploaded on: {lecture.uploadDate}</span>
+            <span>Uploaded on: {new Date(lecture.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
       </div>
@@ -72,8 +100,21 @@ const VideoLecture = () => {
           My Lectures
         </h2>
 
-        {/* Display each uploaded lecture as a full-width card */}
-        {uploadedLectures.map(renderLectureCard)}
+        {/* Display Loading */}
+        {loading && <p className="text-center text-gray-500">Loading...</p>}
+
+        {/* Display Error */}
+        {error && <p className="text-center text-red-500">{error}</p>}
+
+        {/* Display Video Lectures */}
+        {!loading && !error && uploadedLectures.length > 0 ? (
+          uploadedLectures.map(renderLectureCard)
+        ) : (
+          !loading &&
+          !error && (
+            <p className="text-center text-gray-500">No videos uploaded yet.</p>
+          )
+        )}
       </div>
     </div>
   );

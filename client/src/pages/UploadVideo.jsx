@@ -1,14 +1,20 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Navbar from "../componant/Navbar";
+import { useSelector } from "react-redux"; // Import Redux hook
 
 const UploadVideo = () => {
   const [videoLink, setVideoLink] = useState("");
-  const [videoId, setVideoId] = useState(""); // Extracted YouTube video ID
+  const [videoId, setVideoId] = useState("");
   const [description, setDescription] = useState("");
-  const [title, setTitle] = useState(""); // New state for video title
+  const [title, setTitle] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
+
+  // Get user data from Redux Persist
+  const userState = useSelector((state) => state.user); // Adjust based on your store's structure
+  const currentUser = userState?.currentUser; // Directly use currentUser
+  const userId = currentUser?._id; // Extract user ID
 
   // Extract YouTube Video ID
   const extractYouTubeVideoId = (url) => {
@@ -21,7 +27,6 @@ const UploadVideo = () => {
     const link = e.target.value;
     setVideoLink(link);
 
-    // Extract and set YouTube video ID for preview
     const extractedId = extractYouTubeVideoId(link);
     setVideoId(extractedId);
   };
@@ -37,19 +42,30 @@ const UploadVideo = () => {
       return;
     }
 
-    try {
-      const response = await axios.post("http://localhost:3000/api/video", {
-        videoLink, // Full YouTube link
-        title, // Title of the video
-        description, // Description of the video
-      });
+    if (!userId) {
+      setMessage("User not logged in. Please log in to upload a video.");
+      setIsUploading(false);
+      return;
+    }
 
-      if (response.status === 200) {
+  const userData = {
+    userId, // Pass the logged-in user's ID
+    videoLink,
+    title,
+    description,
+  }
+
+    console.log(userData);
+
+    try {
+      const response = await axios.post("http://localhost:3000/api/video/upload", userData);
+
+      if (response.status === 201) {
         setMessage("🎉 Video uploaded successfully!");
         setVideoLink("");
         setVideoId("");
         setDescription("");
-        setTitle(""); // Reset title after successful upload
+        setTitle("");
       } else {
         setMessage("❌ Failed to upload the video.");
       }

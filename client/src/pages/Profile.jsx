@@ -17,53 +17,26 @@ const Profile = () => {
   const userId = currentUser?._id;
 
   const [user, setUser] = useState(currentUser); // Local state for user data
-  const [subscribedSections, setSubscribedSections] = useState([
-    {
-      id: 1,
-      title: "React for Beginners",
-      description: "Learn React from scratch.",
-      category: "Tech Lectures",
-      channel: "Code Academy",
-      image: "/images/react.jpg",
-    },
-    {
-      id: 2,
-      title: "Advanced JavaScript",
-      description: "Deep dive into JavaScript.",
-      category: "Tech Lectures",
-      channel: "TechieTube",
-      image: "/images/javascript.jpg",
-    },
-    {
-      id: 3,
-      title: "Cooking Basics",
-      description: "Master the art of cooking.",
-      category: "Cooking",
-      channel: "Tasty Kitchen",
-      image: "/images/cooking.jpg",
-    },
-    {
-      id: 4,
-      title: "Reading Classics",
-      description: "Explore timeless classics.",
-      category: "Reading",
-      channel: "Book Haven",
-      image: "/images/reading.jpg",
-    },
-  ]);
+  const [subscribedSections, setSubscribedSections] = useState([]);
 
   useEffect(() => {
     if (userId) {
+      // Send the userId to the backend to fetch the subscribedTo array
       axios
-        .get(`http://localhost:3000/api/users/profile/${userId}`)
+        .get(`http://localhost:3000/api/users/getcourses`, {
+          params: { userId: userId }, // Sending userId as query parameter
+        })
         .then((response) => {
-          setUser(response.data); // Set local user state
+          console.log("this is my response", response);
+          const { subscribedTo } = response.data;
+          console.log("Subscribed To:", subscribedTo);
+          setSubscribedSections(response.data); // Set subscribedTo array to local state
         })
         .catch((error) => {
           console.error("Error fetching user data:", error);
         });
     } else {
-      navigate("/login"); // Redirect to login if no user is available
+      navigate("/login"); // Redirect to login if no userId is available
     }
   }, [userId, navigate]);
 
@@ -140,7 +113,7 @@ const Profile = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {subscribedSections.map((section) => (
                 <div
-                  key={section.id}
+                  key={section._id} // Use the unique _id from the backend response
                   className="p-4 bg-white border rounded-lg shadow-lg hover:shadow-xl transition"
                 >
                   <h4 className="text-lg font-semibold text-gray-800 mb-2">

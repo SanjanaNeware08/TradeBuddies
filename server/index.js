@@ -11,7 +11,9 @@ app.use(express.json()); // Parse incoming JSON requests
 
 // Routes
 const userRoutes = require('./routes/userRoutes');
+const videoRoutes = require('./routes/videoRoutes');
 app.use('/api/users', userRoutes); // Use the user routes for handling requests
+app.use('/api/video',videoRoutes)
 
 // MongoDB connection
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
