@@ -12,7 +12,7 @@ function Footer() {
         <div className="text-sm text-gray-400 mb-1">
           <i className="fa-regular fa-copyright"></i> 2024
         </div>
-        <p className="text-black-300 font-light">have fun in learnings - Sanjana</p>
+        <p className="text-black-300 font-light">Made by - Sanjana</p>
       </div>
     </div>
   );

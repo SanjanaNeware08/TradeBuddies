@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../componant/Navbar";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "react-toastify/dist/ReactToastify.css"; 
 import { storage } from "../firebase"; // Import the Firebase storage
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage"; // Import Firebase v9+ functions
 
@@ -71,12 +71,12 @@ const Register = () => {
   return (
     <>
       <Navbar />
-      <div className="flex items-center justify-center min-h-screen bg-blue-300">
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-r from-blue-100 to-blue-200">
         <form
           onSubmit={handleSubmit}
-          className="w-full max-w-sm bg-white p-8 rounded-lg shadow-lg"
+          className="w-full max-w-md bg-white p-8 rounded-lg shadow-lg border border-gray-200"
         >
-          <h2 className="text-2xl font-bold text-center mb-6 text-gray-700">
+          <h2 className="text-3xl font-semibold text-center mb-6 text-gray-800">
             Register
           </h2>
 
@@ -86,7 +86,7 @@ const Register = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -95,7 +95,7 @@ const Register = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -104,7 +104,7 @@ const Register = () => {
             value={phoneNo}
             onChange={(e) => setPhoneNo(e.target.value)}
             required
-            className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full px-4 py-3 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           <input
@@ -113,7 +113,7 @@ const Register = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
 
           {/* Domain Dropdown */}
@@ -121,7 +121,7 @@ const Register = () => {
             value={domain}
             onChange={(e) => setDomain(e.target.value)}
             required
-            className="w-full px-4 py-2 mb-6 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+            className="w-full px-4 py-3 mb-6 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="" disabled>
               Select your domain
@@ -142,20 +142,20 @@ const Register = () => {
               type="file"
               accept="image/*"
               onChange={(e) => setProfilePicture(e.target.files[0])}
-              className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-indigo-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full bg-indigo-500 text-white py-2 rounded-md font-semibold hover:bg-indigo-600 transition duration-200"
+            className="w-full bg-indigo-600 text-white py-3 rounded-md font-semibold hover:bg-indigo-700 transition duration-200"
           >
             Register
           </button>
 
           <p className="text-center text-gray-600 mt-4">
             Already have an account?{" "}
-            <a href="/login" className="text-indigo-500 hover:underline">
+            <a href="/login" className="text-indigo-600 hover:underline">
               Login here
             </a>
           </p>

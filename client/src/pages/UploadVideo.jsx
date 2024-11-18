@@ -1,12 +1,12 @@
-// UploadVideo.js
 import React, { useState } from "react";
 import axios from "axios";
+import Navbar from "../componant/Navbar";
 
 const UploadVideo = () => {
   const [videoLink, setVideoLink] = useState("");
   const [videoId, setVideoId] = useState(""); // Extracted YouTube video ID
   const [description, setDescription] = useState("");
-  const [allowComments, setAllowComments] = useState(false);
+  const [title, setTitle] = useState(""); // New state for video title
   const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
 
@@ -40,95 +40,126 @@ const UploadVideo = () => {
     try {
       const response = await axios.post("http://localhost:3000/api/video", {
         videoLink, // Full YouTube link
-        description,
-        allowComments,
+        title, // Title of the video
+        description, // Description of the video
       });
 
       if (response.status === 200) {
-        setMessage("Video uploaded successfully!");
+        setMessage("🎉 Video uploaded successfully!");
         setVideoLink("");
         setVideoId("");
         setDescription("");
-        setAllowComments(false);
+        setTitle(""); // Reset title after successful upload
       } else {
-        setMessage("Failed to upload the video.");
+        setMessage("❌ Failed to upload the video.");
       }
     } catch (error) {
       console.error("Error uploading video:", error);
-      setMessage("Error uploading video.");
+      setMessage("❌ Error uploading video.");
     } finally {
       setIsUploading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-semibold mb-6 text-center">Upload YouTube Video</h2>
+    <div>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-50 to-blue-100 py-8 px-4">
+        <div className="bg-white p-6 rounded-xl shadow-lg w-full max-w-sm">
+          <h2 className="text-2xl font-semibold text-center text-blue-600 mb-4">
+            Upload Your Video 🎥
+          </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Video Link Input */}
-          <div>
-            <label className="block text-gray-700">YouTube Video Link:</label>
-            <input
-              type="text"
-              value={videoLink}
-              onChange={handleVideoLinkChange}
-              className="w-full p-2 border rounded-md"
-              placeholder="Enter YouTube video URL"
-              required
-            />
-          </div>
-
-          {/* YouTube Video Preview */}
-          {videoId && (
-            <div className="mt-4">
-              <label className="block text-gray-700 mb-2">Preview:</label>
-              <iframe
-                src={`https://www.youtube.com/embed/${videoId}`}
-                className="w-full h-64 rounded-lg"
-                allowFullScreen
-                title="YouTube Video Preview"
-              ></iframe>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Video Title Input */}
+            <div>
+              <label className="block text-gray-800 font-medium mb-1">
+                Video Title:
+              </label>
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Enter the video title"
+                required
+              />
             </div>
+
+            {/* Video Link Input */}
+            <div>
+              <label className="block text-gray-800 font-medium mb-1">
+                Enter Video Link:
+              </label>
+              <input
+                type="text"
+                value={videoLink}
+                onChange={handleVideoLinkChange}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                placeholder="Paste URL here"
+                required
+              />
+            </div>
+
+            {/* YouTube Video Preview */}
+            {videoId && (
+              <div>
+                <label className="block text-gray-800 font-medium mb-1">
+                  Video Preview:
+                </label>
+                <div className="overflow-hidden rounded-lg shadow-md">
+                  <iframe
+                    src={`https://www.youtube.com/embed/${videoId}`}
+                    className="w-full h-40 rounded-lg"
+                    allowFullScreen
+                    title="YouTube Video Preview"
+                  ></iframe>
+                </div>
+              </div>
+            )}
+
+            {/* Description Input */}
+            <div>
+              <label className="block text-gray-800 font-medium mb-1">
+                Description:
+              </label>
+              <textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                rows="3"
+                placeholder="Add a brief description"
+                required
+              ></textarea>
+            </div>
+
+            {/* Upload Button */}
+            <button
+              type="submit"
+              className={`w-full p-2 rounded-md text-white font-semibold transition duration-300 ${
+                isUploading
+                  ? "bg-blue-300 cursor-not-allowed"
+                  : "bg-blue-600 hover:bg-blue-700"
+              }`}
+              disabled={isUploading}
+            >
+              {isUploading ? "Uploading..." : "Upload Video"}
+            </button>
+          </form>
+
+          {/* Status Message */}
+          {message && (
+            <p
+              className={`mt-4 text-center text-sm font-medium ${
+                message.includes("🎉")
+                  ? "text-green-600"
+                  : "text-red-600"
+              }`}
+            >
+              {message}
+            </p>
           )}
-
-          {/* Description Input */}
-          <div>
-            <label className="block text-gray-700">Description:</label>
-            <textarea
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="w-full p-2 border rounded-md"
-              rows="4"
-              placeholder="Add a description for the video"
-              required
-            ></textarea>
-          </div>
-
-          {/* Allow Comments Checkbox */}
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              checked={allowComments}
-              onChange={(e) => setAllowComments(e.target.checked)}
-              className="mr-2"
-            />
-            <label className="text-gray-700">Allow Comments</label>
-          </div>
-
-          {/* Upload Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600"
-            disabled={isUploading}
-          >
-            {isUploading ? "Uploading..." : "Upload Video"}
-          </button>
-        </form>
-
-        {/* Status Message */}
-        {message && <p className="mt-4 text-center text-gray-700">{message}</p>}
+        </div>
       </div>
     </div>
   );
