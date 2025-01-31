@@ -17,7 +17,7 @@ const Profile = () => {
   const userId = currentUser?._id;
 
   const [user, setUser] = useState(currentUser); // Local state for user data
-  const [subscribedSections, setSubscribedSections] = useState([]);
+  const [subscribedSections, setSubscribedSections] = useState([]); // Subscribed user data
 
   useEffect(() => {
     if (userId) {
@@ -27,13 +27,11 @@ const Profile = () => {
           params: { userId: userId }, // Sending userId as query parameter
         })
         .then((response) => {
-          console.log("this is my response", response);
-          const { subscribedTo } = response.data;
-          console.log("Subscribed To:", subscribedTo);
-          setSubscribedSections(response.data); // Set subscribedTo array to local state
+          console.log("Response from backend:", response.data);
+          setSubscribedSections(response.data); // Store subscribed user data
         })
         .catch((error) => {
-          console.error("Error fetching user data:", error);
+          console.error("Error fetching subscribed users:", error);
         });
     } else {
       navigate("/login"); // Redirect to login if no userId is available
@@ -104,36 +102,45 @@ const Profile = () => {
         </div>
 
         {/* Main Content */}
-        <div className="w-4/5 p-6">
-          <h3 className="text-3xl font-semibold mb-6 text-gray-700">
-            Subscribed Lectures
-          </h3>
+        {/* Main Content */}
+<div className="w-4/5 p-6">
+  <h3 className="text-3xl font-semibold mb-6 text-gray-700">
+    Subscribed Users
+  </h3>
 
-          {subscribedSections.length > 0 ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-              {subscribedSections.map((section) => (
-                <div
-                  key={section._id} // Use the unique _id from the backend response
-                  className="p-4 bg-white border rounded-lg shadow-lg hover:shadow-xl transition"
-                >
-                  <h4 className="text-lg font-semibold text-gray-800 mb-2">
-                    {section.title}
-                  </h4>
-                  <p className="text-gray-600 text-sm mb-3">
-                    {section.description}
-                  </p>
-                  <span className="text-xs font-medium text-green-600">
-                    {section.category}
-                  </span>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="flex items-center justify-center p-6 border border-gray-200 rounded-lg text-gray-500">
-              <p>No subscribed sections yet.</p>
-            </div>
-          )}
+  {subscribedSections.length > 0 ? (
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {subscribedSections.map((section) => (
+        <div
+          key={section._id} // Use the unique _id from the backend response
+          className="flex items-center p-4 bg-white border rounded-lg shadow-lg hover:shadow-xl transition"
+        >
+          {/* Left Side: Profile Picture */}
+          <img
+            src={section.profilePicture || "/default-profile.png"} // Default image fallback
+            alt={section.name}
+            className="w-16 h-16 rounded-full object-cover mr-4"
+          />
+
+          {/* Right Side: Name and Domain */}
+          <div className="flex flex-col">
+            <h4 className="text-lg font-semibold text-gray-800 mb-1">
+              {section.name} {/* Render the user's name */}
+            </h4>
+            <p className="text-sm text-gray-600">
+              {section.domain} {/* Render the user's domain */}
+            </p>
+          </div>
         </div>
+      ))}
+    </div>
+  ) : (
+    <div className="flex items-center justify-center p-6 border border-gray-200 rounded-lg text-gray-500">
+      <p>No subscribed users yet.</p>
+    </div>
+  )}
+</div>
+
       </div>
     </div>
   );

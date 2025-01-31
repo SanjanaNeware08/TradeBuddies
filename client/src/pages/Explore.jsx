@@ -12,16 +12,16 @@ const domainData = {
     { id: 4, title: "A Savory Delight", thumbnail: "/images/food1.jpg" },
   ],
   Artistry: [
-    { id: 5, title: "Painting 101", thumbnail: "https://via.placeholder.com/150" },
-    { id: 6, title: "Sketching Techniques", thumbnail: "https://via.placeholder.com/150" },
+    { id: 5, title: "Painting 101", thumbnail: "/images/art1.jpg" },
+    { id: 6, title: "Sketching Techniques", thumbnail: "/images/art2.jpg" },
   ],
   Acting: [
-    { id: 7, title: "Acting for Beginners", thumbnail: "https://via.placeholder.com/150" },
-    { id: 8, title: "Improvisation Tips", thumbnail: "https://via.placeholder.com/150" },
+    { id: 7, title: "Acting for Beginners", thumbnail: "/images/act.jpg" },
+    { id: 8, title: "Improvisation Tips", thumbnail: "/images/act2.jpg" },
   ],
   Reading: [
-    { id: 9, title: "Speed Reading Techniques", thumbnail: "https://via.placeholder.com/150" },
-    { id: 10, title: "Analyzing Literature", thumbnail: "https://via.placeholder.com/150" },
+    { id: 9, title: "Speed Reading Techniques", thumbnail: "/images/read.jpg" },
+    { id: 10, title: "Analyzing Literature", thumbnail: "/images/read2.jpg" },
   ],
 };
 
